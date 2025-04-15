@@ -15,6 +15,7 @@ import logging.config
 from pathlib import Path
 
 from decouple import config
+from datetime import timedelta
 from django.utils.log import DEFAULT_LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,7 +47,7 @@ DJANGO_APPS = [
 
 LOCAL_APPS = []
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ["rest_framework"]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -108,6 +109,29 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# REST Framework config
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+# Simple JWT config
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=config("ACCESS_TOKEN_LIFETIME_IN_MINUTES")
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        minutes=config("REFRESH_TOKEN_LIFETIME_IN_MINUTES")
+    ),
+    "SIGNING_KEY": config("SIGNING_KEY"),
+    "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
 
 
 # Internationalization
