@@ -21,6 +21,10 @@ from django.utils.log import DEFAULT_LOGGING
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Logs directory
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -45,7 +49,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = ["apps.users"]
 
 THIRD_PARTY_APPS = ["rest_framework"]
 
@@ -91,6 +95,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "users.CustomUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -122,10 +127,10 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=config("ACCESS_TOKEN_LIFETIME_IN_MINUTES")
+        minutes=config("ACCESS_TOKEN_LIFETIME_IN_MINUTES", cast=int)
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
-        minutes=config("REFRESH_TOKEN_LIFETIME_IN_MINUTES")
+        minutes=config("REFRESH_TOKEN_LIFETIME_IN_MINUTES", cast=int)
     ),
     "SIGNING_KEY": config("SIGNING_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer", "JWT"),
@@ -190,7 +195,7 @@ logging.config.dictConfig(
                 "level": LOG_LEVEL,
                 "class": "logging.FileHandler",
                 "formatter": "file",
-                "filename": "logs/ask_hub.log",
+                "filename": LOGS_DIR / "scrape_sense.log",
             },
             "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
